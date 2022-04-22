@@ -1,40 +1,41 @@
-const mongoose = require('mongoose');
-const cities = require('./cities');
-const { places, descriptors } = require('./seedHelpers');
-const Campground = require('../models/campground');
+const mongoose = require("mongoose");
+const cities = require("./cities");
+const { places, descriptors } = require("./seedHelpers");
+const Campground = require("../models/campground");
 
-mongoose.connect('mongodb://localhost:27017/yelp-camp', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
+mongoose.connect("mongodb://localhost:27017/yelp-camp", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
 
 const db = mongoose.connection;
 
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", () => {
-    console.log("Database connected");
+  console.log("Database connected");
 });
 
-const sample = array => array[Math.floor(Math.random() * array.length)];
-
+const sample = (array) => array[Math.floor(Math.random() * array.length)];
 
 const seedDB = async () => {
-    await Campground.deleteMany({});
-    for (let i = 0; i < 50; i++) {
-        const random1000 = Math.floor(Math.random() * 1000);
-        const price = Math.random() * 1000;
+  await Campground.deleteMany({});
+  for (let i = 0; i < 50; i++) {
+    const random1000 = Math.floor(Math.random() * 1000);
+    const price = Math.random() * 1000;
 
-        const camp = new Campground({
-            location: `${cities[random1000].city}, ${cities[random1000].state}`,
-            title: `${sample(descriptors)} ${sample(places)}`,
-            image: 'https://random.imagecdn.app/500/300',
-            price,
-            description: "  Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi, amet dolore. Magni, alias ex! Vitae reprehenderit, asperiores assumenda sint voluptate est maiores eos vero, minus veritatis nisi tempore at ratione."
-        })
-        await camp.save();
-    }
-}
+    const camp = new Campground({
+      author: "6229a6961f93de7da175a807",
+      location: `${cities[random1000].city}, ${cities[random1000].state}`,
+      title: `${sample(descriptors)} ${sample(places)}`,
+      image: "https://random.imagecdn.app/500/300",
+      price,
+      description:
+        "  Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi, amet dolore. Magni, alias ex! Vitae reprehenderit, asperiores assumenda sint voluptate est maiores eos vero, minus veritatis nisi tempore at ratione.",
+    });
+    await camp.save();
+  }
+};
 
 seedDB().then(() => {
-    mongoose.connection.close();
-})
+  mongoose.connection.close();
+});
